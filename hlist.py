@@ -62,21 +62,7 @@ class HashTab(nautilus.PropertyPageProvider):
         
         start_hash_button.connect("clicked", self.calc_hash, type_conf, file_path)
         compare_button.connect("clicked", self.check_hash)
-###
-        
-        for t in type_conf:
-            row = [t, type_conf[t]]
-            selection = self.hash_tree_view.get_selection()
-            model, it = selection.get_selected()
-            model.append(row)
-       
-        row = ["file", file_path]
-        selection = self.hash_tree_view.get_selection()
-        model, it = selection.get_selected()
-        model.append(row)
-        
-        
-        
+ 
         #Time to pack
         hash_scrolled_win.add_with_viewport(self.hash_tree_view)
         buttonbox.pack_start(compare_button)
@@ -167,6 +153,5 @@ class HashTab(nautilus.PropertyPageProvider):
                 self.event_box.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("red"))
                 self.result_label.set_label("Ko")
         else:
-            # self.event_box.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(""))
             self.result_label.set_label("Select an hash from the table")
         return
