@@ -1,4 +1,4 @@
-To install copy hlist.py to ~/.nautilus/python-extensions and restart nautilus.
+To install copy hashtab.py to ~/.nautilus/python-extensions and restart nautilus.
 
 IMPORTANT:
 Settings' window doesn't work now, you have to automatically change settings in the configuration file.
