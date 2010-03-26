@@ -1,0 +1,7 @@
+VERSION 0.1:
+md5, sha1, sha512 and sha256 supported.
+Settings' window implemented.
+
+VERSION alpha.beta.gamma:
+md5, sha1 and sha512 supported.
+Settings' window isn't implemented yet, you have to modify your configuration file manually.

@@ -1,6 +1,4 @@
 To install copy hashtab.py to ~/.nautilus/python-extensions and restart nautilus.
 
 IMPORTANT:
-Settings' window doesn't work now, you have to automatically change settings in the configuration file.
-Open with a text editor ~/.hash_tab_conf and set to 1 the hash-type you want.
-If this file doesn't exist just run this extension once, it will be automatically created.
+Remove your old ~/.hash_tab_conf before try this new version
