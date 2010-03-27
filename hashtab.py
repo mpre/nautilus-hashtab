@@ -55,6 +55,8 @@ class HashTab(nautilus.PropertyPageProvider):
         self.hash_tree_view.append_column(self.create_col('Type', 0))
         self.hash_tree_view.append_column(self.create_col('Value', 1))
 
+        self.hash_tree_view.connect("button_press_event", self.pop_up)
+
         hash_scrolled_win.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         hash_scrolled_win.set_size_request(10,240)
 
@@ -222,3 +224,34 @@ class HashTab(nautilus.PropertyPageProvider):
         self.settings_win.destroy()
 
         return
+
+    def pop_up(self, widget, event):
+        if event.button == 3:
+            copy_menu = gtk.Menu()
+            item_copy_hash = gtk.MenuItem(label = "Copy hash to clipboard")
+            item_copy_row = gtk.MenuItem(label = "Copy row to clipboard")
+
+            item_copy_hash.connect("activate", self.copy_hash_to_clipboard)
+            item_copy_row.connect("activate", self.copy_row_to_clipboard)
+
+            copy_menu.append(item_copy_hash)
+            copy_menu.append(item_copy_row)
+
+            copy_menu.show_all()
+            copy_menu.popup(None, None, None, event.button, event.time)
+
+    def copy_hash_to_clipboard(self, widget):
+        selection = self.hash_tree_view.get_selection()
+        model, it = selection.get_selected()
+        if it:
+            selected_hash = model.get_value(it, 1)
+            clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(), "CLIPBOARD")
+            clipboard.set_text(selected_hash)
+  
+    def copy_row_to_clipboard(self, widget):
+        selection = self.hash_tree_view.get_selection()
+        model, it = selection.get_selected()
+        if it:
+            selected_hash = "{0} : {1}".format(model.get_value(it, 0), model.get_value(it, 1))
+            clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(), "CLIPBOARD")
+            clipboard.set_text(selected_hash)

@@ -1,3 +1,6 @@
+VERSION 0.15:
+Added a copy menu.
+
 VERSION 0.1:
 md5, sha1, sha512 and sha256 supported.
 Settings' window implemented.
