@@ -4,6 +4,7 @@ import hashlib
 import urllib
 import gtk
 import nautilus
+import binascii
 
 class HashTab(nautilus.PropertyPageProvider):
     
@@ -28,7 +29,7 @@ class HashTab(nautilus.PropertyPageProvider):
         tab_label = gtk.Label('HashTab')
         tab_label.show()
 
-        self.HASH_TYPES = ('MD5', 'SHA1', 'SHA256', 'SHA512')
+        self.HASH_TYPES = ('SHA1', 'SHA256', 'SHA512', 'MD5', 'CRC32')
 
         # Settings dict
         self.type_conf = self.load_conf()
@@ -111,7 +112,7 @@ class HashTab(nautilus.PropertyPageProvider):
             conf_file = open(file_path, 'w')
             conf_file.write('# This is the configuration file for nautilus HashTab extension \n')
             conf_file.write('# Line that begins with "#" are comment \n')
-            conf_file.write('# Type equal to 0 are disabled, type equal to 1 are enabled, don\'t enable many hash type or hashing will require much time \n \n')
+            conf_file.write('# Type equal to False are disabled, type equal to True are enabled, don\'t enable many hash type or hashing will require much time \n \n')
             for hash_type in self.HASH_TYPES:
                 conf_file.write('{0}=False\n'.format(hash_type))            
             conf_file.close()
@@ -129,19 +130,27 @@ class HashTab(nautilus.PropertyPageProvider):
         model, it = selection.get_selected()
         model.clear()
         for hash_type in self.type_conf.keys():
-            if self.type_conf[hash_type] == '1' or self.type_conf[hash_type] == 'True': # If it's True we should calc this hash
+            if self.type_conf[hash_type] == '1' or self.type_conf[hash_type] == 'True':# If it's True we should calc this hash
+                f = open(file_path, 'rb')
                 if hash_type.lower() in ('md5', 'sha1', 'sha512', 'sha224', 'sha256', 'sha384'): # hashlib function
-                    f = open(file_path, 'rb')
                     function = "hashlib.{0}()".format(hash_type.lower())
                     m = eval(function)
                     data = f.read(10240)
                     while (len(data) != 0):
                         m.update(data)
                         data = f.read(10240)
-                    f.close()
-                    selection = self.hash_tree_view.get_selection()
-                    model, it = selection.get_selected()
-                    model.append([hash_type, m.hexdigest()])
+                    hash_value = str(m.hexdigest())
+                elif hash_type.lower() in ('crc32'):
+                    m = binascii.crc32("") & 0xffffffff
+                    data = f.read(10240)
+                    while (len(data) != 0):
+                        m = binascii.crc32(data, m) & 0xffffffff
+                        data = f.read(10240)
+                    hash_value = str(hex(m))[2:]
+                selection = self.hash_tree_view.get_selection()
+                model, it = selection.get_selected()
+                model.append([hash_type, hash_value])
+                f.close()
         self.hash_tree_view.set_cursor(0)
         return
 
